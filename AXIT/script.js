@@ -2,14 +2,15 @@ const getFormElements = () => {
     const nameInput = document.getElementById("nameInput")
     const emailInput = document.getElementById("emailInput")
     const passwordInput = document.getElementById("passwordInput")
-    return [nameInput, emailInput, passwordInput]
+    const repeatPassword = document.getElementById("repeatPassword")
+    return [nameInput, emailInput, passwordInput, repeatPassword]
 }
 
 const submitButton = document.getElementById("submitButton")
 submitButton.addEventListener("click", () => {
     const [nameInput, emailInput, passwordInput] = getFormElements();
     const isNameValid = validateName(nameInput)
-    const isPasswordValid = validatePassword(passwordInput)
+    const isPasswordValid = validatePassword(passwordInput, repeatPassword)
     const isEmailValid = validateEmail(emailInput)
     if (isNameValid && isPasswordValid && isEmailValid) {
         alert("Ура")
@@ -19,10 +20,10 @@ submitButton.addEventListener("click", () => {
 
 const validateName = (nameInput) => {
     if (nameInput.value.length < 8 || nameInput.value.legth > 24) {
-        nameInput.style.borderBottom = "0.1rem dashed red"
+        paintInvalid(nameInput)
         return false
     } else {
-        nameInput.style.borderBottom = "0.1rem solid #b2b2b2"
+        paintValid(nameInput)
         return true
     }
 }
@@ -30,21 +31,37 @@ const validateName = (nameInput) => {
 const validateEmail = (emailInput) => {
     const regEx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     if (emailInput.value.length < 6 || !emailInput.value.toLowerCase().match(regEx)) {
-        emailInput.style.borderBottom = "0.1rem dashed red"
+        paintInvalid(emailInput)
         return false
     } else {
-        emailInput.style.borderBottom = "0.1rem solid #b2b2b2"
+        paintValid(emailInput)
         return true
     }
 }
 
-const validatePassword = (passwordInput) => {
+const validatePassword = (passwordInput, repeatPassword) => {
     if (passwordInput.value.length < 16) {
-        passwordInput.style.borderBottom = "0.1rem dashed red"
+        paintInvalid(passwordInput, repeatPassword)
         return false
     } else {
-        passwordInput.style.borderBottom = "0.1rem solid #b2b2b2"
-        return true
+        if (passwordInput.value === repeatPassword.value) {
+            paintValid(passwordInput, repeatPassword)
+            return true
+        } else {
+            paintInvalid(passwordInput, repeatPassword)
+            return false
+        }
     }
 }
-console.log('Привет')
+const paintInvalid = (element, element2 = undefined) => {
+    if (element2 != undefined) {
+        element2.style.borderBottom = "0.1rem dashed red"
+    }
+    element.style.borderBottom = "0.1rem dashed red"
+}
+const paintValid = (element, element2 = undefined) => {
+    if (element2 != undefined) {
+        element2.style.borderBottom = "0.1rem solid #b2b2b2"
+    }
+    element.style.borderBottom = "0.1rem solid #b2b2b2"
+}
